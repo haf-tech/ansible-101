@@ -1,0 +1,7 @@
+---
+
+- name: Setting custom role facts
+  set_fact:
+    playvars_scope: "{{ playvars.scope }}"
+    playvars_env: "{{ playvars.env }}"
+    playvars_stage: test2

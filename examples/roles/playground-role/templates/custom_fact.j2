@@ -1,0 +1,9 @@
+System = {{ ansible_facts.system }}
+User = {{ ansible_facts.user_id }}
+IPv4 = {{ ansible_facts.eth0.ipv4.address }}
+IPv6 = {{ ansible_facts.eth0.ipv6[0].address }}
+PlayVars.Scope = {{ playvars_scope }}
+PlayVars.Env = {{ playvars_env }}
+PlayVars.Stage = {{ playvars_stage }}
+PlayVars.Internal = {{ playinternals.val }}
+Remote.CustomFacts = {{ ansible_facts.ansible_local.playvars_scope.playvars_scope }}

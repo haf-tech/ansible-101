@@ -1,0 +1,12 @@
+---
+# handlers file for playground-role
+
+# By default handlers triggered at the end of the playbook
+# use the meta module
+# meta: flush_handlers
+# to flush them immediately
+
+# Handle Custom Fact changes 
+- name: Handle Custom Fact Changes
+  debug:
+    msg: "**** Handler - Custom Facts created/modified! ****"

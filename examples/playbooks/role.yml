@@ -1,0 +1,28 @@
+# main Ansible playbook includes the existing roles
+---
+- hosts: all
+  #connection: local
+  vars:
+    items:
+    - one
+    - two
+    - three
+
+  collections:
+    - community.kubernetes
+
+  roles:
+  - role: '../roles/playground-role'
+
+  tasks:
+  - name: Print out all items
+    debug:
+      msg: "Item: {{ idx }}. {{ item }}"
+    loop: "{{ items }}"
+    loop_control:
+      index_var: idx
+
+
+  - name: Bye Bye
+    debug:
+      msg: "Ansible 101 walkthrough completed"

@@ -1,0 +1,7 @@
+[vmhost]
+localhost ansible_connection=local
+
+
+[remote]
+remote.example.com
+

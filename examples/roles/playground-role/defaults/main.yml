@@ -1,0 +1,7 @@
+---
+# defaults file for playground-role
+
+# default and shared variables values, override it
+playvars:
+ scope: default
+ env: demo

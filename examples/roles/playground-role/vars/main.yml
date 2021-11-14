@@ -1,0 +1,7 @@
+---
+# vars file for playground-role
+
+# usually internal variables, which are not shared
+
+playinternals:
+ val: internal-value

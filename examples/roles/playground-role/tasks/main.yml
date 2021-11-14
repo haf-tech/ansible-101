@@ -1,0 +1,46 @@
+---
+# tasks file for playground-role
+
+- name: Print out base information
+  import_tasks: 00_pre.yml
+
+- name: Print out macOS relevant information
+  import_tasks: 00_darwin.yml
+  when: ansible_facts['os_family']|lower == 'darwin'
+
+- name: Print out RHEL relevant information
+  import_tasks: 00_rhel.yml
+  when: ansible_facts['os_family']|lower == 'redhat'
+
+# Block with failure and finalizer section
+- name: Handle Custom Facts
+  block:
+  - name: Set Custom Fact
+    import_tasks: 02_custom_fact_create.yml
+
+  # gather the latest facts due the fact that new custom facts are created
+  - name: Gather the latest facts
+    setup:
+
+  - name: Print ALL fact
+    debug:
+      msg: "{{ ansible_facts }}"
+
+  - name: Print out Custom Fact
+    debug:
+      var: rendered_template
+    vars:
+      rendered_template: "{{ lookup('template', './custom_fact.j2') }}"
+
+  - name: Force Failure
+    command: /bin/false
+
+  rescue:
+  - name: Handling error during Custom Fact processing
+    debug:
+      msg: "Error occurred in Custom Fact block"
+
+  always:
+  - name: Block finished
+    debug:
+      msg: "Custom Fact block completed."

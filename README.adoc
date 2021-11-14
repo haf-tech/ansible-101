@@ -1,0 +1,121 @@
+= Ansible 101
+:author: Hafid Haddouti
+:toc: macro
+:toclevels: 4
+:sectlinks:
+:sectanchors:
+
+toc::[]
+
+== Overview
+
+Ansible - is automation.
+
+
+== Install & Config
+
+link:https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html[Install Ansible] using your OS related packages.
+
+----
+$ ansible --version
+ansible [core 2.11.6]
+  config file = None
+  configured module search path = ['/Users/haddouti/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/Cellar/ansible/4.7.0/libexec/lib/python3.9/site-packages/ansible
+  ansible collection location = /Users/haddouti/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/local/bin/ansible
+  python version = 3.9.7 (default, Oct 13 2021, 06:45:31) [Clang 13.0.0 (clang-1300.0.29.3)]
+  jinja version = 3.0.2
+  libyaml = True
+----
+
+
+To allow ansible interact with remote host is it mandatory to place the public SSH key (here: `bastion_ssh_key`) on the remote hosts (here: `remote.host.com`)
+
+----
+$ ssh-copy-id -i bastion_ssh_key user@remote.host.com
+----
+
+Afterwards test the access via ssh
+
+----
+$ ssh-copy-id -i bastion_ssh_key user@remote.host.com
+
+[user@bastion ~]$
+----
+
+== Action
+
+
+.Run a module directly
+----
+$ ansible localhost -m ansible.builtin.setup
+[WARNING]: No inventory was parsed, only implicit localhost is available
+localhost | SUCCESS => {
+    "ansible_facts": {
+        "ansible_all_ipv4_addresses": [
+            "192.168.178.26"
+        ],
+        ...
+        "ansible_distribution": "MacOSX",
+        "ansible_distribution_major_version": "11",
+        ...
+    }
+----
+
+.Create a role structure
+----
+$ ansible-galaxy init playground-role
+- Role playground-role was created successfully
+
+tree playground-role
+playground-role
+├── README.md
+├── defaults
+│   └── main.yml        # default variables for the role
+├── files               # static files used from the role
+├── handlers
+│   └── main.yml        # handlers, to react on events
+├── meta
+│   └── main.yml        # meta info and dependencies
+├── tasks
+│   └── main.yml        # main list of tasks that the role executes
+├── templates           # Jinja templates
+├── tests
+│   ├── inventory
+│   └── test.yml
+└── vars
+    └── main.yml        # other variables for the role 
+
+8 directories, 8 files
+----
+
+
+.Execute Playbook `role.yml`
+----
+$ ansible-playbook -i inventory role.yml
+----
+
+.Execute Playbook `role.yml` to the `remote`
+----
+$ ansible-playbook -i inventory -l remote role.yml -e"ansible_ssh_private_key_file=../../work/internal.bastion_ssh"
+----
+
+== Summmary
+
+tbd
+
+== References
+
+* tbd
+
+== License
+
+This article and project are licensed under the Apache License, Version 2.
+Separate third-party code objects invoked within this code pattern are licensed by their respective providers pursuant
+to their own separate licenses. Contributions are subject to the
+link:https://developercertificate.org/[Developer Certificate of Origin, Version 1.1] and the
+link:https://www.apache.org/licenses/LICENSE-2.0.txt[Apache License, Version 2].
+
+See also link:https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN[Apache License FAQ]
+.

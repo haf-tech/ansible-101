@@ -1,0 +1,56 @@
+---
+# RHEL related tasks
+
+- name: RHEL set persistent custom fact
+  block:
+  - name: Check if fact directory exists
+    stat:
+      path: /etc/ansible/facts.d/
+    register: factsd_exists
+
+  # Create a Custom Fact directory at the default dir, if not existing
+  - name: Create fact directory
+    file:
+      path: /etc/ansible/facts.d/
+      state: directory
+    when: not factsd_exists.stat.exists
+
+  # Set static custom fact
+  - name: Create a static custom fact PlayVars.Scope
+    #copy:
+    #  dest: /etc/ansible/facts.d/playvars_scope.fact
+    #  content: '{"playvars_scope": "{{ playvars.scope }}"}'
+    template:
+      src: remote_custom_fact.j2
+      dest: /etc/ansible/facts.d/playvars_scope.fact
+      mode: 0775
+    become: yes
+    notify:
+    - Handle Custom Fact Changes
+
+  # Set a script which generates custom facts
+  - name: Create a dynamic custom fact foobar
+    copy:
+      dest: /etc/ansible/facts.d/foobar.fact
+      mode: 0775
+      content: |
+        #!/usr/bin/python3         
+        
+        import json         
+        
+        def render_data(data):
+          return json.dumps(data)      
+
+        arbitrary_data = {}
+        arbitrary_data["foobar"] = []
+        arbitrary_data["foobar"].append("foo")        
+          
+        print(render_data(arbitrary_data["foobar"]))
+    become: yes
+    notify:
+    - Handle Custom Fact Changes
+
+  always:
+  - name: Create fact completed
+    debug:
+      msg: "RHEL Custom Fact completed."

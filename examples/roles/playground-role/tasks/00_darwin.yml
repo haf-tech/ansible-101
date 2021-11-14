@@ -1,0 +1,20 @@
+---
+# macOS related tasks
+
+- name: MacOS Measurement Unit
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleMeasurementUnits
+    state: list
+
+- name: MacOS Language
+  community.general.osx_defaults:
+    key: AppleLanguages
+    state: list
+
+- name: MacOS Software Update Checker
+  community.general.osx_defaults:
+    domain: /Library/Preferences/com.apple.SoftwareUpdate
+    key: AutomaticCheckEnabled
+    state: list
+  #become: yes
