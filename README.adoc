@@ -46,6 +46,7 @@ $ ssh-copy-id -i bastion_ssh_key user@remote.host.com
 
 == Action
 
+The following sections covers the main capabilities of Ansible with the help of an Ansible role and playbook.
 
 .Run a module directly
 ----
