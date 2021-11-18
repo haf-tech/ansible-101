@@ -1,0 +1,77 @@
+# Ansible Playbook: showcase for 
+# - vars & loops
+# - including and integrating roles
+# - tasks
+---
+- hosts: all
+  #connection: local
+  vars:
+    items:
+    - one
+    - two
+    - three
+    k8s_namespace: vault-test3
+
+  collections:
+    - community.kubernetes
+
+
+  tasks:
+  - name: K8S Examples
+    block:
+    - name: List all namespaces
+      community.kubernetes.k8s_info:
+        api_version: v1
+        kind: Namespace
+      register: ns
+
+    - name: Print out namespaces
+      debug:
+        msg: "===> Namespace.Name = {{ item.metadata.name }}"
+      loop: "{{ ns.resources }}"
+      when: DEBUG_LEVEL == 'DEBUG'
+
+    - name: List all PODs
+      community.kubernetes.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ k8s_namespace }}"
+      register: pods
+
+    - name: Print out PODs
+      debug:
+        msg: "===> POD.Name = {{ item.metadata.name }}"
+      loop: "{{ pods.resources }}"
+
+    
+    - name: Provision PVC
+      community.kubernetes.k8s:
+        definition: "{{ lookup('file', 'demo.pvc.yaml') | from_yaml }}"
+        # The desired state
+        state: present
+
+    - name: Retrieve PVC state
+      community.kubernetes.k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        name: pvc-test
+        namespace: "{{ k8s_namespace }}"
+        wait: yes
+        wait_timeout: 60
+      register: demo_pvc
+
+    - name: Debug PVC status
+      debug:
+        msg: "{{ demo_pvc }}"
+
+    - name: Debug PVC status
+      when: 
+      - demo_pvc.resources
+      - demo_pvc.resources[0].status.phase == "Bound"
+      debug:
+        msg: "PVC creation was SUCCESSFUL"
+  
+
+  - name: Bye Bye
+    debug:
+      msg: "Ansible 101 walkthrough completed"

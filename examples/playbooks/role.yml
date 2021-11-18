@@ -1,4 +1,7 @@
-# main Ansible playbook includes the existing roles
+# Ansible Playbook: showcase for 
+# - vars & loops
+# - including and integrating roles
+# - tasks
 ---
 - hosts: all
   #connection: local

@@ -99,8 +99,25 @@ $ ansible-playbook -i inventory role.yml
 
 .Execute Playbook `role.yml` to the `remote`
 ----
-$ ansible-playbook -i inventory -l remote role.yml -e"ansible_ssh_private_key_file=../../work/internal.bastion_ssh"
+$ ansible-playbook -i inventory -l remote role.yml -e"ansible_ssh_private_key_file=../../work/internal.bastion_ssh" -e"ansible_python_interpreter=/usr/bin/python3"
 ----
+
+.Execute Playbook `k8s.yml` to the `remote`
+----
+$ ansible-playbook -i inventory -l vmhost k8s.yml -e"ansible_ssh_private_key_file=../../work/internal.bastion_ssh" -e"ansible_python_interpreter=/usr/bin/python3"
+----
+
+.Install roles and collections as defined in the `requirements.yml`
+----
+$ ansible-galaxy install -r requirements.yml
+----
+
+.Install roles and collections as defined in the `requirements.yml`
+----
+$ ansible-galaxy collection install -r requirements.yml -p /path/.ansible/plugins/modules
+----
+
+
 
 == Summmary
 
